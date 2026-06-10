@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "843608827725",
+    "project_id": "eduvantage-804c1",
+    "storage_bucket": "eduvantage-804c1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:843608827725:android:37a60dfc6aad263711b904",
+        "android_client_info": {
+          "package_name": "com.example.eduvantage"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiifta1liAJZiZb3Ns-rRU9wgXadm-1CU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
