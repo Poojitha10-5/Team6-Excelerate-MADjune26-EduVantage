@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../models/user_model.dart';
+import '../services/user_service.dart';
 import 'program_details_screen.dart';
 import 'profile_screen.dart';
 import 'learn_screen.dart';
@@ -15,6 +17,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   final TextEditingController _searchController = TextEditingController();
+  final UserService _userService = UserService();
+  UserModel? _user;
 
   final List<Map<String, dynamic>> _programs = [
     {
@@ -62,6 +66,23 @@ class _HomeScreenState extends State<HomeScreen> {
     },
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _loadUser();
+  }
+
+  Future<void> _loadUser() async {
+    final user = await _userService.getCurrentUser();
+    if (mounted) setState(() => _user = user);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   void _navigateToDetails(Map<String, dynamic> item) {
     Navigator.push(
       context,
@@ -69,17 +90,18 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  final List<Widget> _screens = const [
-    SizedBox(), // placeholder — Home is rendered inline
-    ProfileScreen(),
-    LearnScreen(),
-    MessagesScreen(),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    // Pass user down to profile screen
+    final screens = [
+      const SizedBox(), // Home rendered inline
+      ProfileScreen(user: _user),
+      const LearnScreen(),
+      const MessagesScreen(),
+    ];
+
     return Scaffold(
-      body: _currentIndex == 0 ? _buildHome() : _screens[_currentIndex],
+      body: _currentIndex == 0 ? _buildHome() : screens[_currentIndex],
       bottomNavigationBar: _buildBottomNav(),
     );
   }
@@ -109,6 +131,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildTopBar() {
+    final firstName = _user?.firstName ?? '';
+    final initial = _user?.initial ?? '';
+
     return Container(
       color: AppColors.primary,
       padding: EdgeInsets.only(
@@ -147,9 +172,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              const Text(
-                'Good morning, Srijon 👋',
-                style: TextStyle(
+              Text(
+                firstName.isEmpty
+                    ? 'Welcome 👋'
+                    : 'Good morning, $firstName 👋',
+                style: const TextStyle(
                   fontSize: 11,
                   color: AppColors.primaryLight,
                   fontFamily: 'Poppins',
@@ -162,9 +189,9 @@ class _HomeScreenState extends State<HomeScreen> {
             child: CircleAvatar(
               radius: 18,
               backgroundColor: AppColors.primaryDark,
-              child: const Text(
-                'S',
-                style: TextStyle(
+              child: Text(
+                initial,
+                style: const TextStyle(
                   color: AppColors.primaryLight,
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
@@ -251,7 +278,6 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Tag
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
               decoration: BoxDecoration(

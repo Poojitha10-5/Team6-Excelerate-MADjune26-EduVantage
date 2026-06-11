@@ -30,10 +30,7 @@ class DefaultFirebaseOptions {
           'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -62,7 +59,6 @@ class DefaultFirebaseOptions {
     projectId: 'eduvantage-804c1',
     storageBucket: 'eduvantage-804c1.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAMefIBp-dTGUKt7pJao2eNGnB2bGOcqxA',
     appId: '1:843608827725:ios:a620c209c0f02adc11b904',
@@ -70,5 +66,14 @@ class DefaultFirebaseOptions {
     projectId: 'eduvantage-804c1',
     storageBucket: 'eduvantage-804c1.firebasestorage.app',
     iosBundleId: 'com.example.eduvantage',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyDUGs7AzRDmjXv0ReCE3BYLQcO29XqcQug',
+    appId: '1:843608827725:web:d9f177c6d73fda6711b904',
+    messagingSenderId: '843608827725',
+    projectId: 'eduvantage-804c1',
+    authDomain: 'eduvantage-804c1.firebaseapp.com',
+    storageBucket: 'eduvantage-804c1.firebasestorage.app',
   );
 }
