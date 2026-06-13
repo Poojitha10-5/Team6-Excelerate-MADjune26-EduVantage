@@ -54,3 +54,13 @@ Improve collaboration during learning and internship activities.
 Integrate learning, internships, assignments, communication, and progress tracking into one application.
 Eliminate the need to switch between multiple platforms.
 Create a seamless educational and professional development experience.
+
+SCREENSHOT OF EDUVANTAGE
+
+<img width="1920" height="1080" alt="splachscreen" src="https://github.com/user-attachments/assets/7b3e225e-9ecd-4862-85de-c6bb810187a6" />
+<img width="1907" height="1006" alt="login" src="https://github.com/user-attachments/assets/d4f69e6a-ca75-4144-a573-b4ea27288816" />
+<img width="1875" height="957" alt="signup" src="https://github.com/user-attachments/assets/9b4da0f2-46b2-4c52-92b1-3dae125aa51f" />
+<img width="1920" height="1021" alt="home" src="https://github.com/user-attachments/assets/110c39f2-673d-4ab7-baad-580ee4cf7e6d" />
+<img width="1920" height="1024" alt="programdetail1" src="https://github.com/user-attachments/assets/6fec6a08-6573-47b0-9e03-096d286456be" />
+<img width="1920" height="1016" alt="programdetail2" src="https://github.com/user-attachments/assets/dd0ed19b-71eb-4651-ac4c-c027e6f16705" />
+<img width="1920" height="1028" alt="profile" src="https://github.com/user-attachments/assets/5e2cc9f4-93dc-46aa-b479-078c93627de1" />
