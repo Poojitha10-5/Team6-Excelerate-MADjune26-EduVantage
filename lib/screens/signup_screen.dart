@@ -45,7 +45,6 @@ class _SignupScreenState extends State<SignupScreen> {
     setState(() => _isLoading = false);
 
     if (result.isSuccess) {
-      // Replace entire stack with Home so back button doesn't go to auth
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => const HomeScreen()),
         (route) => false,
@@ -124,7 +123,7 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget _buildHeader(BuildContext context) {
     return Column(
       children: [
-        // Back button + logo row
+        // Back button
         Row(
           children: [
             GestureDetector(
@@ -146,7 +145,7 @@ class _SignupScreenState extends State<SignupScreen> {
           ],
         ),
         const SizedBox(height: 12),
-        // Logo + wordmark
+        // Logo + wordmark + tagline
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -177,28 +176,44 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
             ),
             const SizedBox(width: 10),
-            RichText(
-              text: const TextSpan(
-                style: TextStyle(fontFamily: 'Poppins'),
-                children: [
-                  TextSpan(
-                    text: 'Edu',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w300,
-                      color: Colors.white,
-                    ),
+            // Column so "by Excelerate" appears BELOW "EduVantage"
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(
+                  text: const TextSpan(
+                    style: TextStyle(fontFamily: 'Poppins'),
+                    children: [
+                      TextSpan(
+                        text: 'Edu',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w300,
+                          color: Colors.white,
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'Vantage',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
                   ),
-                  TextSpan(
-                    text: 'Vantage',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
+                ),
+                const Text(
+                  'by Excelerate',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.white70,
+                    fontFamily: 'Poppins',
+                    letterSpacing: 0.5,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),
@@ -224,7 +239,6 @@ class _SignupScreenState extends State<SignupScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Title + subtitle
           const Center(
             child: Text(
               'Create Account',
@@ -243,8 +257,6 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
           ),
           const SizedBox(height: 22),
-
-          // Full name
           _label('Full Name'),
           const SizedBox(height: 5),
           TextFormField(
@@ -253,11 +265,8 @@ class _SignupScreenState extends State<SignupScreen> {
             textInputAction: TextInputAction.next,
             decoration: const InputDecoration(
               hintText: 'John Doe',
-              prefixIcon: Icon(
-                Icons.person_outline,
-                size: 18,
-                color: AppColors.textTertiary,
-              ),
+              prefixIcon: Icon(Icons.person_outline,
+                  size: 18, color: AppColors.textTertiary),
             ),
             validator: (v) {
               if (v == null || v.trim().isEmpty) return 'Name is required';
@@ -266,8 +275,6 @@ class _SignupScreenState extends State<SignupScreen> {
             },
           ),
           const SizedBox(height: 14),
-
-          // Email
           _label('Email'),
           const SizedBox(height: 5),
           TextFormField(
@@ -276,11 +283,8 @@ class _SignupScreenState extends State<SignupScreen> {
             textInputAction: TextInputAction.next,
             decoration: const InputDecoration(
               hintText: 'your@email.com',
-              prefixIcon: Icon(
-                Icons.email_outlined,
-                size: 18,
-                color: AppColors.textTertiary,
-              ),
+              prefixIcon: Icon(Icons.email_outlined,
+                  size: 18, color: AppColors.textTertiary),
             ),
             validator: (v) {
               if (v == null || v.trim().isEmpty) return 'Email is required';
@@ -291,8 +295,6 @@ class _SignupScreenState extends State<SignupScreen> {
             },
           ),
           const SizedBox(height: 14),
-
-          // Password
           _label('Password'),
           const SizedBox(height: 5),
           TextFormField(
@@ -301,11 +303,8 @@ class _SignupScreenState extends State<SignupScreen> {
             textInputAction: TextInputAction.next,
             decoration: InputDecoration(
               hintText: 'Min. 6 characters',
-              prefixIcon: const Icon(
-                Icons.lock_outline,
-                size: 18,
-                color: AppColors.textTertiary,
-              ),
+              prefixIcon: const Icon(Icons.lock_outline,
+                  size: 18, color: AppColors.textTertiary),
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscurePassword
@@ -327,8 +326,6 @@ class _SignupScreenState extends State<SignupScreen> {
             },
           ),
           const SizedBox(height: 14),
-
-          // Confirm password
           _label('Confirm Password'),
           const SizedBox(height: 5),
           TextFormField(
@@ -338,11 +335,8 @@ class _SignupScreenState extends State<SignupScreen> {
             onFieldSubmitted: (_) => _handleSignup(),
             decoration: InputDecoration(
               hintText: 'Re-enter password',
-              prefixIcon: const Icon(
-                Icons.lock_outline,
-                size: 18,
-                color: AppColors.textTertiary,
-              ),
+              prefixIcon: const Icon(Icons.lock_outline,
+                  size: 18, color: AppColors.textTertiary),
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscureConfirm
@@ -363,8 +357,6 @@ class _SignupScreenState extends State<SignupScreen> {
             },
           ),
           const SizedBox(height: 22),
-
-          // Sign up button
           SizedBox(
             width: double.infinity,
             height: 48,
@@ -375,16 +367,12 @@ class _SignupScreenState extends State<SignupScreen> {
                       width: 20,
                       height: 20,
                       child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
+                          strokeWidth: 2, color: Colors.white),
                     )
                   : const Text('Create Account'),
             ),
           ),
           const SizedBox(height: 18),
-
-          // Login link
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -411,9 +399,9 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Widget _label(String text) => Text(
-    text,
-    style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
-  );
+        text,
+        style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+      );
 }
 
 // ── Clippers ─────────────────────────────────────────────────────────────────
@@ -423,17 +411,9 @@ class _TealWaveClipper extends CustomClipper<Path> {
     final path = Path();
     path.lineTo(0, size.height * 0.75);
     path.quadraticBezierTo(
-      size.width * 0.25,
-      size.height,
-      size.width * 0.5,
-      size.height * 0.85,
-    );
+        size.width * 0.25, size.height, size.width * 0.5, size.height * 0.85);
     path.quadraticBezierTo(
-      size.width * 0.75,
-      size.height * 0.70,
-      size.width,
-      size.height * 0.82,
-    );
+        size.width * 0.75, size.height * 0.70, size.width, size.height * 0.82);
     path.lineTo(size.width, 0);
     path.close();
     return path;
@@ -449,18 +429,10 @@ class _SageBlobClipper extends CustomClipper<Path> {
     final path = Path();
     path.moveTo(size.width, 0);
     path.lineTo(0, 0);
+    path.quadraticBezierTo(size.width * 0.2, size.height * 0.6,
+        size.width * 0.5, size.height * 0.85);
     path.quadraticBezierTo(
-      size.width * 0.2,
-      size.height * 0.6,
-      size.width * 0.5,
-      size.height * 0.85,
-    );
-    path.quadraticBezierTo(
-      size.width * 0.75,
-      size.height,
-      size.width,
-      size.height * 0.82,
-    );
+        size.width * 0.75, size.height, size.width, size.height * 0.82);
     path.close();
     return path;
   }

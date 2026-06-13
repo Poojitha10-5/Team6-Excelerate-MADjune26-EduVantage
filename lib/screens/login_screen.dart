@@ -27,7 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  // Login
   Future<void> _handleLogin() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _isLoading = true);
@@ -41,15 +40,14 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = false);
 
     if (result.isSuccess) {
-      Navigator.of(
-        context,
-      ).pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen()));
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
+      );
     } else {
       _showError(result.error!);
     }
   }
 
-  // Forgot password
   void _handleForgotPassword() async {
     final email = _emailController.text.trim();
     if (email.isEmpty) {
@@ -148,6 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildLogo() {
     return Column(
       children: [
+        // App logo image
         ClipRRect(
           borderRadius: BorderRadius.circular(16),
           child: Image.asset(
@@ -175,6 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
         const SizedBox(height: 12),
+        // EduVantage wordmark
         RichText(
           text: const TextSpan(
             style: TextStyle(fontFamily: 'Poppins'),
@@ -182,7 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
               TextSpan(
                 text: 'Edu',
                 style: TextStyle(
-                  fontSize: 26,
+                  fontSize: 28,
                   fontWeight: FontWeight.w300,
                   color: Colors.white,
                 ),
@@ -190,12 +190,24 @@ class _LoginScreenState extends State<LoginScreen> {
               TextSpan(
                 text: 'Vantage',
                 style: TextStyle(
-                  fontSize: 26,
+                  fontSize: 28,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
                 ),
               ),
             ],
+          ),
+        ),
+        // by Excelerate — directly below on its own line
+        const SizedBox(height: 4),
+        const Text(
+          'by Excelerate',
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w300,
+            color: Colors.white70,
+            fontFamily: 'Poppins',
+            letterSpacing: 0.5,
           ),
         ),
       ],
@@ -220,7 +232,6 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Title
           const Center(
             child: Text(
               'Login',
@@ -232,8 +243,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           const SizedBox(height: 22),
-
-          // Email
           _label('Email'),
           const SizedBox(height: 5),
           TextFormField(
@@ -242,11 +251,8 @@ class _LoginScreenState extends State<LoginScreen> {
             textInputAction: TextInputAction.next,
             decoration: const InputDecoration(
               hintText: 'your@email.com',
-              prefixIcon: Icon(
-                Icons.email_outlined,
-                size: 18,
-                color: AppColors.textTertiary,
-              ),
+              prefixIcon: Icon(Icons.email_outlined,
+                  size: 18, color: AppColors.textTertiary),
             ),
             validator: (v) {
               if (v == null || v.trim().isEmpty) return 'Email is required';
@@ -257,8 +263,6 @@ class _LoginScreenState extends State<LoginScreen> {
             },
           ),
           const SizedBox(height: 16),
-
-          // Password
           _label('Password'),
           const SizedBox(height: 5),
           TextFormField(
@@ -268,11 +272,8 @@ class _LoginScreenState extends State<LoginScreen> {
             onFieldSubmitted: (_) => _handleLogin(),
             decoration: InputDecoration(
               hintText: '••••••••',
-              prefixIcon: const Icon(
-                Icons.lock_outline,
-                size: 18,
-                color: AppColors.textTertiary,
-              ),
+              prefixIcon: const Icon(Icons.lock_outline,
+                  size: 18, color: AppColors.textTertiary),
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscurePassword
@@ -292,8 +293,6 @@ class _LoginScreenState extends State<LoginScreen> {
             },
           ),
           const SizedBox(height: 8),
-
-          // Forgot password
           Align(
             alignment: Alignment.centerRight,
             child: GestureDetector(
@@ -305,8 +304,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           const SizedBox(height: 20),
-
-          // Submit button
           SizedBox(
             width: double.infinity,
             height: 48,
@@ -317,16 +314,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: 20,
                       height: 20,
                       child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
+                          strokeWidth: 2, color: Colors.white),
                     )
                   : const Text('Submit'),
             ),
           ),
           const SizedBox(height: 18),
-
-          // Divider
           Row(
             children: [
               const Expanded(child: Divider(color: AppColors.border)),
@@ -341,20 +334,17 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
           const SizedBox(height: 16),
-
-          // Create account
           SizedBox(
             width: double.infinity,
             height: 46,
             child: OutlinedButton(
-              onPressed: () => Navigator.of(
-                context,
-              ).push(MaterialPageRoute(builder: (_) => const SignupScreen())),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const SignupScreen()),
+              ),
               style: OutlinedButton.styleFrom(
                 side: const BorderSide(color: AppColors.border),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                    borderRadius: BorderRadius.circular(12)),
               ),
               child: const Text(
                 'Create Account',
@@ -373,24 +363,16 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 }
 
-// Clippers
+// ── Clippers ─────────────────────────────────────────────────────────────────
 class _TealWaveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
     path.lineTo(0, size.height * 0.75);
     path.quadraticBezierTo(
-      size.width * 0.25,
-      size.height,
-      size.width * 0.5,
-      size.height * 0.85,
-    );
+        size.width * 0.25, size.height, size.width * 0.5, size.height * 0.85);
     path.quadraticBezierTo(
-      size.width * 0.75,
-      size.height * 0.70,
-      size.width,
-      size.height * 0.82,
-    );
+        size.width * 0.75, size.height * 0.70, size.width, size.height * 0.82);
     path.lineTo(size.width, 0);
     path.close();
     return path;
@@ -406,18 +388,10 @@ class _SageBlobClipper extends CustomClipper<Path> {
     final path = Path();
     path.moveTo(size.width, 0);
     path.lineTo(0, 0);
+    path.quadraticBezierTo(size.width * 0.2, size.height * 0.6,
+        size.width * 0.5, size.height * 0.85);
     path.quadraticBezierTo(
-      size.width * 0.2,
-      size.height * 0.6,
-      size.width * 0.5,
-      size.height * 0.85,
-    );
-    path.quadraticBezierTo(
-      size.width * 0.75,
-      size.height,
-      size.width,
-      size.height * 0.82,
-    );
+        size.width * 0.75, size.height, size.width, size.height * 0.82);
     path.close();
     return path;
   }
