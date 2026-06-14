@@ -67,3 +67,4 @@ SCREENSHOT OF EDUVANTAGE
 
 ##Contribution
 Worked on UI development, screen design, and documentation for the EduVantage app as part of the Excelerate internship program. Collaborated with the team to build a functional prototype. 
+- Ummu-Kulthum Abdul-Rahman
