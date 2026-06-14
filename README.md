@@ -66,4 +66,4 @@ SCREENSHOT OF EDUVANTAGE
 <img width="1920" height="1028" alt="profile" src="https://github.com/user-attachments/assets/5e2cc9f4-93dc-46aa-b479-078c93627de1" />
 
 ##Contribution
-Worked on UI development, screen design, and documentation for the EduVantage app as part of the Excelerate internship program. Collaborated with the team to build a functional prototype.
+Worked on UI development, screen design, and documentation for the EduVantage app as part of the Excelerate internship program. Collaborated with the team to build a functional prototype. 
