@@ -55,7 +55,11 @@ Integrate learning, internships, assignments, communication, and progress tracki
 Eliminate the need to switch between multiple platforms.
 Create a seamless educational and professional development experience.
 
-SCREENSHOT OF EDUVANTAGE
+## UI Design Approach
+The interface was designed with a student-first approach, focusing on simplicity, accessibility, and ease of navigation.
+
+
+SCREENSHOTS OF EDUVANTAGE
 
 <img width="1920" height="1080" alt="splachscreen" src="https://github.com/user-attachments/assets/7b3e225e-9ecd-4862-85de-c6bb810187a6" />
 <img width="1907" height="1006" alt="login" src="https://github.com/user-attachments/assets/d4f69e6a-ca75-4144-a573-b4ea27288816" />
