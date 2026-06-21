@@ -7,7 +7,7 @@ class AppColors {
   static const Color primaryLight = Color(0xFF9FE1CB); // light teal
   static const Color primaryBg = Color(0xFFE1F5EE); // teal bg tint
 
-  // Sage/muted green accent (from logo wave blob)
+  // Sage/muted green accent
   static const Color sage = Color(0xFF7EA68A);
 
   // Navy (text on logo)

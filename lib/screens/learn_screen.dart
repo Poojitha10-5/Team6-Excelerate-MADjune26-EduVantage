@@ -47,8 +47,6 @@ class LearnScreen extends StatelessWidget {
                   const SizedBox(height: 10),
                   _buildRewardsRow(),
                   const SizedBox(height: 20),
-
-                  // ── Feedback nudge ──────────────────────────────────────
                   const _FeedbackNudge(),
                   const SizedBox(height: 20),
                 ],

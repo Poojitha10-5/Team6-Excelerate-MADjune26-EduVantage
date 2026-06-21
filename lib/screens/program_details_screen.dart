@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
-import 'profile_screen.dart';
+import '../services/application_service.dart';
+import 'home_screen.dart';
 
 class ProgramDetailsScreen extends StatelessWidget {
   final Map<String, dynamic> item;
@@ -323,23 +324,268 @@ class ProgramDetailsScreen extends StatelessWidget {
         width: double.infinity,
         height: 48,
         child: ElevatedButton(
-          onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Applied successfully! Check your profile.'),
-                backgroundColor: AppColors.primary,
-              ),
-            );
-            Future.delayed(const Duration(seconds: 1), () {
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => const ProfileScreen()),
-                (route) => false,
-              );
-            });
-          },
+          onPressed: () => showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (_) => _ApplyModal(item: item),
+          ),
           child: const Text('Apply Now'),
         ),
       ),
     );
   }
+}
+
+class _ApplyModal extends StatefulWidget {
+  final Map<String, dynamic> item;
+
+  const _ApplyModal({required this.item});
+
+  @override
+  State<_ApplyModal> createState() => _ApplyModalState();
+}
+
+class _ApplyModalState extends State<_ApplyModal> {
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _applicationService = ApplicationService();
+
+  // 'form' | 'loading' | 'success'
+  String _state = 'form';
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _state = 'loading');
+
+    final error = await _applicationService.submitApplication(
+      programTitle: widget.item['title'] ?? '',
+      programType: widget.item['type'] ?? 'program',
+      name: _nameController.text,
+      email: _emailController.text,
+    );
+
+    if (!mounted) return;
+
+    if (error != null) {
+      setState(() => _state = 'form');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error),
+          backgroundColor: Colors.red.shade600,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } else {
+      setState(() => _state = 'success');
+    }
+  }
+
+  void _goToProfile() {
+    Navigator.of(context).pop(); // close the modal
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => const HomeScreen(initialIndex: 1)),
+      (route) => false,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: _state != 'loading',
+      child: Container(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        decoration: const BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+            child: _state == 'loading'
+                ? _buildLoader()
+                : _state == 'success'
+                    ? _buildSuccess()
+                    : _buildForm(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildForm() {
+    return Form(
+      key: _formKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Handle bar
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.border,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            'Apply now',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            widget.item['title'] ?? '',
+            style:
+                const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+          ),
+          const SizedBox(height: 20),
+
+          // Name
+          _label('Name'),
+          const SizedBox(height: 5),
+          TextFormField(
+            controller: _nameController,
+            textCapitalization: TextCapitalization.words,
+            textInputAction: TextInputAction.next,
+            decoration: const InputDecoration(
+              hintText: 'Your name',
+              prefixIcon: Icon(Icons.person_outline,
+                  size: 18, color: AppColors.textTertiary),
+            ),
+            validator: (v) =>
+                (v == null || v.trim().isEmpty) ? 'Name is required' : null,
+          ),
+          const SizedBox(height: 14),
+
+          // Email
+          _label('Email'),
+          const SizedBox(height: 5),
+          TextFormField(
+            controller: _emailController,
+            keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.done,
+            onFieldSubmitted: (_) => _submit(),
+            decoration: const InputDecoration(
+              hintText: 'your@email.com',
+              prefixIcon: Icon(Icons.email_outlined,
+                  size: 18, color: AppColors.textTertiary),
+            ),
+            validator: (v) {
+              if (v == null || v.trim().isEmpty) return 'Email is required';
+              if (!RegExp(r'^[\w\.-]+@[\w\.-]+\.\w+$').hasMatch(v.trim())) {
+                return 'Enter a valid email';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 22),
+
+          // Submit
+          SizedBox(
+            width: double.infinity,
+            height: 48,
+            child: ElevatedButton(
+              onPressed: _submit,
+              child: const Text('Submit Application'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoader() {
+    return const SizedBox(
+      height: 200,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(
+            color: AppColors.primary,
+            strokeWidth: 3,
+          ),
+          SizedBox(height: 20),
+          Text(
+            'Submitting your application...',
+            style: TextStyle(
+              fontSize: 14,
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSuccess() {
+    return SizedBox(
+      height: 240,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 64,
+            height: 64,
+            decoration: const BoxDecoration(
+              color: AppColors.primaryBg,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.check_rounded,
+              color: AppColors.primary,
+              size: 36,
+            ),
+          ),
+          const SizedBox(height: 18),
+          const Text(
+            'Applied successfully!',
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w500,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 6),
+          const Text(
+            'Check your profile to track progress.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+          ),
+          const SizedBox(height: 24),
+          SizedBox(
+            width: 180,
+            height: 42,
+            child: ElevatedButton(
+              onPressed: _goToProfile,
+              child: const Text('Go to Profile'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _label(String text) => Text(
+        text,
+        style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+      );
 }

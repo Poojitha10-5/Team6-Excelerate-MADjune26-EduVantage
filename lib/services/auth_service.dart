@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../models/user_model.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   // Stream: broadcasts auth state changes (login / logout)
   Stream<User?> get authStateChanges => _auth.authStateChanges();
@@ -20,10 +23,23 @@ class AuthService {
         email: email.trim(),
         password: password,
       );
-      // Save display name
-      await credential.user?.updateDisplayName(name.trim());
-      await credential.user?.reload();
-      return AuthResult.success(credential.user);
+
+      final user = credential.user;
+      if (user != null) {
+        await user.updateDisplayName(name.trim());
+        await user.reload();
+
+        // UserService.getCurrentUser() reads from on every screen.
+        await _db.collection('users').doc(user.uid).set(
+              UserModel(
+                uid: user.uid,
+                name: name.trim(),
+                email: email.trim(),
+              ).toMap(),
+            );
+      }
+
+      return AuthResult.success(user);
     } on FirebaseAuthException catch (e) {
       return AuthResult.error(_mapFirebaseError(e.code));
     } catch (_) {

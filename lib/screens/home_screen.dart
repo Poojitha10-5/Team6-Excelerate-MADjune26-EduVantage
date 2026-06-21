@@ -8,14 +8,16 @@ import 'learn_screen.dart';
 import 'messages_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final int initialIndex;
+
+  const HomeScreen({super.key, this.initialIndex = 0});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _currentIndex = 0;
+  late int _currentIndex;
   final TextEditingController _searchController = TextEditingController();
   final UserService _userService = UserService();
   UserModel? _user;
@@ -37,6 +39,46 @@ class _HomeScreenState extends State<HomeScreen> {
           'Intensive program covering HTML, CSS, React, and Node.js with real-world project experience.',
       'tag': 'Web Dev',
       'duration': '6 weeks',
+      'tagColor': AppColors.primaryBg,
+      'tagTextColor': AppColors.primaryDark,
+      'type': 'program',
+    },
+    {
+      'title': 'Data Science Fundamentals',
+      'desc':
+          'Learn Python, Pandas, and data visualization. Build and evaluate basic machine learning models.',
+      'tag': 'Data Science',
+      'duration': '5 weeks',
+      'tagColor': AppColors.primaryBg,
+      'tagTextColor': AppColors.primaryDark,
+      'type': 'program',
+    },
+    {
+      'title': 'UI/UX Design Essentials',
+      'desc':
+          'Master Figma, design systems, and user research methods. Build a portfolio-ready case study.',
+      'tag': 'Design',
+      'duration': '4 weeks',
+      'tagColor': AppColors.primaryBg,
+      'tagTextColor': AppColors.primaryDark,
+      'type': 'program',
+    },
+    {
+      'title': 'Cloud Computing with AWS',
+      'desc':
+          'Hands-on with EC2, S3, Lambda, and IAM. Deploy a full-stack app to the cloud by week 6.',
+      'tag': 'Cloud',
+      'duration': '6 weeks',
+      'tagColor': AppColors.primaryBg,
+      'tagTextColor': AppColors.primaryDark,
+      'type': 'program',
+    },
+    {
+      'title': 'Cybersecurity Basics',
+      'desc':
+          'Network security, ethical hacking fundamentals, and secure coding practices for real-world threats.',
+      'tag': 'Security',
+      'duration': '5 weeks',
       'tagColor': AppColors.primaryBg,
       'tagTextColor': AppColors.primaryDark,
       'type': 'program',
@@ -64,11 +106,42 @@ class _HomeScreenState extends State<HomeScreen> {
       'tagTextColor': AppColors.purpleAccent,
       'type': 'internship',
     },
+    {
+      'title': 'Backend Engineering Intern',
+      'desc':
+          'Build and ship REST APIs with Node.js, work directly with the platform team on real production code.',
+      'tag': 'Open',
+      'duration': 'Remote · 10 weeks',
+      'tagColor': AppColors.purpleBg,
+      'tagTextColor': AppColors.purpleAccent,
+      'type': 'internship',
+    },
+    {
+      'title': 'Data Analyst Intern',
+      'desc':
+          'Analyze student engagement data, build dashboards, and present insights to the product team.',
+      'tag': 'Open',
+      'duration': 'Hybrid · 8 weeks',
+      'tagColor': AppColors.purpleBg,
+      'tagTextColor': AppColors.purpleAccent,
+      'type': 'internship',
+    },
+    {
+      'title': 'Marketing & Growth Intern',
+      'desc':
+          'Run campaigns, analyze growth metrics, and support content strategy for EduVantage\'s student community.',
+      'tag': 'Open',
+      'duration': 'Remote · 6 weeks',
+      'tagColor': AppColors.purpleBg,
+      'tagTextColor': AppColors.purpleAccent,
+      'type': 'internship',
+    },
   ];
 
   @override
   void initState() {
     super.initState();
+    _currentIndex = widget.initialIndex;
     _loadUser();
   }
 

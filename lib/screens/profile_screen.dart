@@ -2,13 +2,54 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import '../theme/app_theme.dart';
 import '../models/user_model.dart';
+import '../models/application_model.dart';
 import '../services/auth_service.dart';
+import '../services/application_service.dart';
 import 'login_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   final UserModel? user;
 
   const ProfileScreen({super.key, this.user});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  final ApplicationService _applicationService = ApplicationService();
+  List<ApplicationModel> _applications = [];
+  bool _loadingApplications = true;
+  String? _applicationsError;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadApplications();
+  }
+
+  Future<void> _loadApplications() async {
+    setState(() {
+      _loadingApplications = true;
+      _applicationsError = null;
+    });
+    try {
+      final apps = await _applicationService.getMyApplications();
+      if (mounted) {
+        setState(() {
+          _applications = apps;
+          _loadingApplications = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _applicationsError = e.toString();
+          _loadingApplications = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,88 +59,177 @@ class ProfileScreen extends StatelessWidget {
           _buildTopBar(context),
           _buildProfileCard(context),
           Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Applied',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  _buildAppliedCard(
-                    name: 'Mobile App Dev with Flutter',
-                    session: 'Next: Week 2 — UI Prototype',
-                    due: 'Due: June 15, 2026',
-                    progress: 0.30,
-                  ),
-                  _buildAppliedCard(
-                    name: 'Flutter Developer Intern',
-                    session: 'Next: Session 3 — Firebase',
-                    due: 'Due: June 20, 2026',
-                    progress: 0.65,
-                  ),
-                  const SizedBox(height: 6),
-                  const Text(
-                    'Certificates',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  _buildCertCard(
-                    name: 'Dart Fundamentals',
-                    date: 'Completed May 28, 2026',
-                  ),
-                  _buildCertCard(
-                    name: 'Flutter UI Basics',
-                    date: 'Completed June 5, 2026',
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Logout button
-                  SizedBox(
-                    width: double.infinity,
-                    height: 46,
-                    child: OutlinedButton.icon(
-                      onPressed: () async {
-                        await AuthService().signOut();
-                        if (context.mounted) {
-                          Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                                builder: (_) => const LoginScreen()),
-                            (route) => false,
-                          );
-                        }
-                      },
-                      icon:
-                          const Icon(Icons.logout, size: 16, color: Colors.red),
-                      label: const Text(
-                        'Logout',
-                        style: TextStyle(color: Colors.red, fontSize: 14),
+            child: RefreshIndicator(
+              onRefresh: _loadApplications,
+              color: AppColors.primary,
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Applied',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.textPrimary,
                       ),
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.red, width: 0.5),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                    ),
+                    const SizedBox(height: 10),
+                    _buildAppliedSection(),
+                    const SizedBox(height: 6),
+                    const Text(
+                      'Certificates',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    _buildCertCard(
+                      name: 'Dart Fundamentals',
+                      date: 'Completed May 28, 2026',
+                    ),
+                    _buildCertCard(
+                      name: 'Flutter UI Basics',
+                      date: 'Completed June 5, 2026',
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Logout button
+                    SizedBox(
+                      width: double.infinity,
+                      height: 46,
+                      child: OutlinedButton.icon(
+                        onPressed: () async {
+                          await AuthService().signOut();
+                          if (context.mounted) {
+                            Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                  builder: (_) => const LoginScreen()),
+                              (route) => false,
+                            );
+                          }
+                        },
+                        icon: const Icon(Icons.logout,
+                            size: 16, color: Colors.red),
+                        label: const Text(
+                          'Logout',
+                          style: TextStyle(color: Colors.red, fontSize: 14),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: Colors.red, width: 0.5),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                ],
+                    const SizedBox(height: 20),
+                  ],
+                ),
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildAppliedSection() {
+    if (_loadingApplications) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 24),
+        child: Center(
+          child: SizedBox(
+            width: 24,
+            height: 24,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: AppColors.primary,
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (_applicationsError != null) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.only(bottom: 10),
+        decoration: BoxDecoration(
+          color: Colors.red.shade50,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.red.shade200, width: 0.5),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Couldn\'t load applications',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Colors.red.shade700,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              _applicationsError!,
+              style: TextStyle(fontSize: 10, color: Colors.red.shade600),
+            ),
+            const SizedBox(height: 8),
+            GestureDetector(
+              onTap: _loadApplications,
+              child: Text(
+                'Tap to retry',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Colors.red.shade700,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (_applications.isEmpty) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(20),
+        margin: const EdgeInsets.only(bottom: 10),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.border, width: 0.5),
+        ),
+        child: const Center(
+          child: Text(
+            'No applications yet — explore programs on Home.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      children: _applications
+          .map((app) => _buildAppliedCard(
+                name: app.programTitle,
+                session: app.programType == 'internship'
+                    ? 'Internship application'
+                    : 'Program application',
+                due: 'Applied as ${app.applicantName}',
+                progress: app.progress,
+              ))
+          .toList(),
     );
   }
 
@@ -140,10 +270,10 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildProfileCard(BuildContext context) {
-    final displayName = user?.name ?? 'User';
-    final displayEmail = user?.email ?? '';
-    final displayRole = user?.role ?? 'Student';
-    final initial = user?.initial ?? 'U';
+    final displayName = widget.user?.name ?? 'User';
+    final displayEmail = widget.user?.email ?? '';
+    final displayRole = widget.user?.role ?? 'Student';
+    final initial = widget.user?.initial ?? 'U';
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 14),
@@ -306,7 +436,7 @@ class ProfileScreen extends StatelessWidget {
   }
 }
 
-// ── Circular progress widget ─────────────────────────────────────────────────
+// Circular progress widget
 class _CircularProgress extends StatelessWidget {
   final double progress;
   const _CircularProgress({required this.progress});

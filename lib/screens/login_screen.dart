@@ -363,7 +363,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 }
 
-// ── Clippers ─────────────────────────────────────────────────────────────────
+// Clippers
 class _TealWaveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {

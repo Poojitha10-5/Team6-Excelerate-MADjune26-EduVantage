@@ -404,7 +404,6 @@ class _SignupScreenState extends State<SignupScreen> {
       );
 }
 
-// ── Clippers ─────────────────────────────────────────────────────────────────
 class _TealWaveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
