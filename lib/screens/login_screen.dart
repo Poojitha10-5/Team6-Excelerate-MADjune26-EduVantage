@@ -203,9 +203,9 @@ class _LoginScreenState extends State<LoginScreen> {
         const Text(
           'by Excelerate',
           style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w300,
-            color: Colors.white70,
+            fontSize: 13,
+            fontWeight: FontWeight.w700, // bold
+            color: Colors.white, // full white instead of white70
             fontFamily: 'Poppins',
             letterSpacing: 0.5,
           ),

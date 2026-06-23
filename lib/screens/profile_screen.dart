@@ -92,10 +92,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     _buildCertCard(
                       name: 'Dart Fundamentals',
                       date: 'Completed May 28, 2026',
+                      assetPath: 'assets/images/dart_certificate.png',
                     ),
                     _buildCertCard(
                       name: 'Flutter UI Basics',
                       date: 'Completed June 5, 2026',
+                      assetPath: 'assets/images/flutter_certificate.png',
                     ),
                     const SizedBox(height: 16),
 
@@ -380,63 +382,152 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildCertCard({required String name, required String date}) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border, width: 0.5),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: AppColors.primaryBg,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Icon(Icons.workspace_premium_outlined,
-                size: 18, color: AppColors.primaryDark),
+  Widget _buildCertCard({
+    required String name,
+    required String date,
+    required String assetPath,
+  }) {
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => _CertificateViewer(
+            name: name,
+            assetPath: assetPath,
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        ),
+      ),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.border, width: 0.5),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: AppColors.primaryBg,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(Icons.workspace_premium_outlined,
+                  size: 18, color: AppColors.primaryDark),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(name,
+                      style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.textPrimary)),
+                  const SizedBox(height: 2),
+                  Text(date,
+                      style: const TextStyle(
+                          fontSize: 10, color: AppColors.textTertiary)),
+                ],
+              ),
+            ),
+            // View indicator
+            Row(
               children: [
-                Text(name,
-                    style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.textPrimary)),
-                const SizedBox(height: 2),
-                Text(date,
-                    style: const TextStyle(
-                        fontSize: 10, color: AppColors.textTertiary)),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryBg,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Text('Earned',
+                      style: TextStyle(
+                          fontSize: 10,
+                          color: AppColors.primaryDark,
+                          fontWeight: FontWeight.w500)),
+                ),
+                const SizedBox(width: 6),
+                const Icon(Icons.chevron_right,
+                    size: 16, color: AppColors.textTertiary),
               ],
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-            decoration: BoxDecoration(
-              color: AppColors.primaryBg,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const Text('Earned',
-                style: TextStyle(
-                    fontSize: 10,
-                    color: AppColors.primaryDark,
-                    fontWeight: FontWeight.w500)),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
-// Circular progress widget
+// ─── Certificate Full-Screen Viewer ───────────────────────────────────────────
+
+class _CertificateViewer extends StatelessWidget {
+  final String name;
+  final String assetPath;
+
+  const _CertificateViewer({
+    required this.name,
+    required this.assetPath,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        leading: IconButton(
+          icon: const Icon(Icons.close, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          name,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+            fontFamily: 'Poppins',
+          ),
+        ),
+        elevation: 0,
+      ),
+      body: Center(
+        child: InteractiveViewer(
+          minScale: 0.8,
+          maxScale: 4.0,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.asset(
+                assetPath,
+                fit: BoxFit.contain,
+                errorBuilder: (_, __, ___) => Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Icon(Icons.broken_image_outlined,
+                        color: Colors.white54, size: 48),
+                    SizedBox(height: 12),
+                    Text(
+                      'Certificate image not found.',
+                      style: TextStyle(color: Colors.white54, fontSize: 13),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Circular Progress ────────────────────────────────────────────────────────
+
 class _CircularProgress extends StatelessWidget {
   final double progress;
   const _CircularProgress({required this.progress});
