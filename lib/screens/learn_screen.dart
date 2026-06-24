@@ -19,7 +19,7 @@ class LearnScreen extends StatelessWidget {
                 children: [
                   _sectionTitle('Notes'),
                   const SizedBox(height: 10),
-                  _buildNotesGrid(),
+                  _buildNotesGrid(context),
                   const SizedBox(height: 16),
                   _sectionTitle('Deliverables'),
                   const SizedBox(height: 10),
@@ -27,13 +27,13 @@ class LearnScreen extends StatelessWidget {
                     title: 'Week 2 UI Prototype',
                     desc:
                         '4 screens: Login, Home, Program Details, Profile with navigation',
-                    due: 'Due Jun 15',
+                    due: 'Due in 4 days',
                   ),
                   _buildDeliverableCard(
                     title: 'GitHub README update',
                     desc:
                         'Include app screenshots and meaningful commit messages',
-                    due: 'Due Jun 15',
+                    due: 'Due in 7 days',
                   ),
                   const SizedBox(height: 16),
                   _sectionTitle('Challenges'),
@@ -114,12 +114,36 @@ class LearnScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildNotesGrid() {
+  Widget _buildNotesGrid(BuildContext context) {
     final notes = [
-      {'title': 'Dart basics', 'desc': 'Variables, types, functions'},
-      {'title': 'Widgets 101', 'desc': 'Stateless vs Stateful'},
-      {'title': 'Navigation', 'desc': 'Routes & Navigator'},
-      {'title': 'Firebase setup', 'desc': 'Auth & Firestore'},
+      {
+        'title': 'Dart basics',
+        'desc': 'Variables, types, functions',
+        'detail':
+            'Dart is the programming language used to build Flutter applications. It provides variables, data types, operators, and functions to write clean and efficient code. Features like null safety help prevent common runtime errors and improve code reliability. Dart also supports object-oriented programming, making it easier to organize large applications. A strong understanding of Dart forms the foundation for learning Flutter development.',
+        'icon': Icons.code,
+      },
+      {
+        'title': 'Widgets 101',
+        'desc': 'Stateless vs Stateful',
+        'detail':
+            'Widgets are the fundamental building blocks of every Flutter user interface. Stateless widgets display content that remains unchanged, while Stateful widgets update dynamically based on user interactions or data changes. Widgets can be combined to create responsive and reusable UI components. Understanding the widget tree helps developers structure applications efficiently. Choosing the right widget improves performance and maintainability.',
+        'icon': Icons.widgets_outlined,
+      },
+      {
+        'title': 'Navigation',
+        'desc': 'Routes & Navigator',
+        'detail':
+            'Navigation allows users to move smoothly between different screens in a Flutter application. Flutter provides the Navigator class for pushing and popping routes during navigation. Named routes make navigation simpler and easier to manage in larger projects. Data can also be passed between screens to improve user interaction. Well-designed navigation creates a seamless and intuitive user experience.',
+        'icon': Icons.route_outlined,
+      },
+      {
+        'title': 'Firebase setup',
+        'desc': 'Auth & Firestore',
+        'detail':
+            'Firebase is a Backend-as-a-Service platform that integrates easily with Flutter applications. It provides Authentication for secure user login and Firestore for storing and syncing data in real time. Setting up Firebase involves connecting your Flutter project and configuring the required services. Security rules help protect application data from unauthorized access. Firebase enables developers to build scalable applications with minimal backend management.',
+        'icon': Icons.cloud_outlined,
+      },
     ];
 
     return GridView.builder(
@@ -132,34 +156,145 @@ class LearnScreen extends StatelessWidget {
         childAspectRatio: 2.0,
       ),
       itemCount: notes.length,
-      itemBuilder: (_, i) => Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.border, width: 0.5),
+      itemBuilder: (_, i) => GestureDetector(
+        onTap: () => _showNotePopup(
+          context,
+          title: notes[i]['title'] as String,
+          detail: notes[i]['detail'] as String,
+          icon: notes[i]['icon'] as IconData,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              notes[i]['title']!,
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: AppColors.textPrimary,
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.border, width: 0.5),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      notes[i]['title'] as String,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ),
+                  const Icon(
+                    Icons.open_in_new,
+                    size: 10,
+                    color: AppColors.textTertiary,
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 3),
-            Text(
-              notes[i]['desc']!,
-              style: const TextStyle(
-                fontSize: 11,
-                color: AppColors.textSecondary,
+              const SizedBox(height: 3),
+              Text(
+                notes[i]['desc'] as String,
+                style: const TextStyle(
+                  fontSize: 11,
+                  color: AppColors.textSecondary,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showNotePopup(
+    BuildContext context, {
+    required String title,
+    required String detail,
+    required IconData icon,
+  }) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.4),
+      builder: (_) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 28, vertical: 80),
+        backgroundColor: AppColors.surface,
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header row
+              Row(
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryBg,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(icon, size: 18, color: AppColors.primaryDark),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                        fontFamily: 'Poppins',
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: const Icon(
+                      Icons.close,
+                      size: 18,
+                      color: AppColors.textTertiary,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 14),
+              const Divider(color: AppColors.border, height: 1),
+              const SizedBox(height: 14),
+              // Detail text
+              Text(
+                detail,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppColors.textSecondary,
+                  height: 1.7,
+                ),
+              ),
+              const SizedBox(height: 18),
+              // Close button
+              SizedBox(
+                width: double.infinity,
+                height: 40,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size.zero,
+                    padding: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text(
+                    'Got it',
+                    style: TextStyle(fontSize: 13),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -226,54 +361,114 @@ class LearnScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildChallengeCard(String title, String desc) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border, width: 0.5),
+  void _showChallengePopup(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.6),
+      builder: (_) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 60),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Stack(
+            children: [
+              Image.asset(
+                'assets/images/challange_img.png',
+                fit: BoxFit.contain,
+                errorBuilder: (_, __, ___) => Container(
+                  color: AppColors.surface,
+                  padding: const EdgeInsets.all(24),
+                  child: const Text(
+                    'Challenge image not found.',
+                    style: TextStyle(color: AppColors.textSecondary),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 8,
+                right: 8,
+                child: GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.45),
+                      shape: BoxShape.circle,
+                    ),
+                    child:
+                        const Icon(Icons.close, size: 16, color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
-      child: Row(
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: AppColors.purpleBg,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Icon(
-              Icons.extension_outlined,
-              size: 18,
-              color: AppColors.purpleAccent,
-            ),
+    );
+  }
+
+  Widget _buildChallengeCard(String title, String desc) {
+    return Builder(
+      builder: (context) => GestureDetector(
+        onTap: () => _showChallengePopup(context),
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.border, width: 0.5),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textPrimary,
-                  ),
+          child: Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: AppColors.purpleBg,
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                const SizedBox(height: 3),
-                Text(
-                  desc,
-                  style: const TextStyle(
-                    fontSize: 11,
-                    color: AppColors.textSecondary,
-                  ),
+                child: const Icon(
+                  Icons.extension_outlined,
+                  size: 18,
+                  color: AppColors.purpleAccent,
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            title,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                        ),
+                        const Icon(Icons.open_in_new,
+                            size: 10, color: AppColors.textTertiary),
+                      ],
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      desc,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -316,6 +511,8 @@ class LearnScreen extends StatelessWidget {
     );
   }
 }
+
+// Feedback Nudge
 
 class _FeedbackNudge extends StatelessWidget {
   const _FeedbackNudge();
@@ -398,6 +595,8 @@ class _FeedbackNudge extends StatelessWidget {
   }
 }
 
+// Feedback Modal
+
 class _FeedbackModal extends StatefulWidget {
   const _FeedbackModal();
 
@@ -412,7 +611,6 @@ class _FeedbackModalState extends State<_FeedbackModal> {
   final _commentsController = TextEditingController();
   final _feedbackService = FeedbackService();
 
-  // 'form' | 'loading' | 'success'
   String _state = 'form';
 
   @override
@@ -488,7 +686,6 @@ class _FeedbackModalState extends State<_FeedbackModal> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Handle bar
           Center(
             child: Container(
               width: 40,
@@ -514,8 +711,6 @@ class _FeedbackModalState extends State<_FeedbackModal> {
             style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
           ),
           const SizedBox(height: 20),
-
-          // Name
           _label('Name'),
           const SizedBox(height: 5),
           TextFormField(
@@ -531,8 +726,6 @@ class _FeedbackModalState extends State<_FeedbackModal> {
                 (v == null || v.trim().isEmpty) ? 'Name is required' : null,
           ),
           const SizedBox(height: 14),
-
-          // Email
           _label('Email'),
           const SizedBox(height: 5),
           TextFormField(
@@ -553,8 +746,6 @@ class _FeedbackModalState extends State<_FeedbackModal> {
             },
           ),
           const SizedBox(height: 14),
-
-          // Comments
           _label('Comments'),
           const SizedBox(height: 5),
           TextFormField(
@@ -576,8 +767,6 @@ class _FeedbackModalState extends State<_FeedbackModal> {
                 : null,
           ),
           const SizedBox(height: 22),
-
-          // Submit button
           SizedBox(
             width: double.infinity,
             height: 48,
@@ -597,17 +786,11 @@ class _FeedbackModalState extends State<_FeedbackModal> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircularProgressIndicator(
-            color: AppColors.primary,
-            strokeWidth: 3,
-          ),
+          CircularProgressIndicator(color: AppColors.primary, strokeWidth: 3),
           SizedBox(height: 20),
           Text(
             'Submitting your feedback...',
-            style: TextStyle(
-              fontSize: 14,
-              color: AppColors.textSecondary,
-            ),
+            style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
           ),
         ],
       ),
@@ -627,11 +810,8 @@ class _FeedbackModalState extends State<_FeedbackModal> {
               color: AppColors.primaryBg,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.check_rounded,
-              color: AppColors.primary,
-              size: 36,
-            ),
+            child: const Icon(Icons.check_rounded,
+                color: AppColors.primary, size: 36),
           ),
           const SizedBox(height: 18),
           const Text(
