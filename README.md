@@ -167,14 +167,14 @@ Prerequisites:
 
 Setup:
 ``bash
-Clone the repo
+Clone the repo :-
 git clone https://github.com/Poojitha10-5/Team6-Excelerate-MADjune26-EduVantage.git
 cd Team6-Excelerate-MADjune26-EduVantage
 
-Install dependencies
+Install dependencies :-
 flutter pub get
 
-Run the app
+Run the app :-
 flutter run
 ```
 
